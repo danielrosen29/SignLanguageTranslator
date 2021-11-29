@@ -24,6 +24,14 @@ def loadNN():#load the model
     return cnn_model
 
 cap = cv2.VideoCapture(0)
+
+#put text at (x,y) on given frame
+color = (0,0,255)
+scale = 2
+font = cv2.FONT_HERSHEY_PLAIN
+def drawText(text, frame, x, y):
+    cv2.putText(frame, text, (x, y), font, scale, color, 2)
+
 while True:
     ret, frame = cap.read()
     if not ret:
