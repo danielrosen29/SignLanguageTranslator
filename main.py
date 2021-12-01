@@ -12,8 +12,10 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '-1'#TODO remove this if you have a graphic
 
 NNPATH = "./checkpoint/checkpoint.ckpt"#path to NN
 
+toDraw = ""
+
 def drawText(text, frame, x, y):
-    cv2.putText(frame, text, (x, y), font, scale, color, 2)
+    image = cv2.putText(frame, text, (x,y), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,100), 2)
 
 def loadNN():#load the model
     layers =  [Input(shape=(28,28,1),name='shape'),#make layers
@@ -35,6 +37,7 @@ def predict(img,model):#predict what value it is
 #Click to capture the image in the box
 def captureImage(event,x,y,flags,params):
     if event == cv2.EVENT_LBUTTONDOWN:
+        global toDraw
         print("here")
         capture = params[0][params[1]//3-(int)(params[1]*.10)+2:params[1]//3*2-(int)(params[1]*.10), params[1]//3+3:params[1]//3*2]
         capture = cv2.cvtColor(capture, cv2.COLOR_BGR2GRAY)
@@ -42,6 +45,7 @@ def captureImage(event,x,y,flags,params):
         print(capture.shape)
         letter = ALPHA[predict(capture,params[2])]
         print(letter)
+        toDraw += letter
         
 
 def main():    
@@ -61,13 +65,15 @@ def main():
         bottomRight = (height//3*2, height//3*2-(int)(height*.10))
         cv2.rectangle(frame, upperLeft, bottomRight, (255, 0, 0), (1))
         frame = cv2.flip(frame, 1)
+        
+        drawText(toDraw,frame, 100, 100)#draw the text buffer
+
         cv2.namedWindow("Feed")
         cv2.imshow("Feed", frame)
         params = [frame,height,cnn_model]
         cv2.setMouseCallback("Feed",captureImage, params)
         
         cv2.waitKey(1)
-
 
 
 
