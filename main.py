@@ -6,7 +6,7 @@ from tensorflow.keras.layers import Input, Dense, Dropout, Flatten, Conv2D, MaxP
 import os
 
 
-LETTERS = "abcdefghijklmnopqrstuvwxyz"
+ALPHA = "abcdefghijklmnopqrstuvwxyz"
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'#TODO remove this if you have a graphics card cuda can run on
 #Ignore all the errors if you are not using the gpu to train
 
@@ -40,7 +40,7 @@ def captureImage(event,x,y,flags,params):
         capture = cv2.cvtColor(capture, cv2.COLOR_BGR2GRAY)
         capture = cv2.resize(capture, (28,28), interpolation = cv2.INTER_AREA)
         print(capture.shape)
-        letter = LETTERS[predict(capture,params[2])]
+        letter = ALPHA[predict(capture,params[2])]
         print(letter)
         
 
