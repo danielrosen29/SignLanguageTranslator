@@ -3,10 +3,10 @@ import numpy as np
 import tensorflow as tf 
 from tensorflow.keras import Sequential
 from tensorflow.keras.layers import Input, Dense, Dropout, Flatten, Conv2D, MaxPool2D
+from skimage.util import random_noise
 import matplotlib
 import matplotlib.pyplot as plt
 import os
-
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'#TODO remove this if you have a graphics card cuda can run on
 #Ignore all the errors if you are not using the gpu to train
 
@@ -47,7 +47,7 @@ def loadData():
 
             vals = vals[1:]
             pic = np.asarray(vals,dtype=np.uint8).reshape([28,28])#define the numpy array
-            
+            pic = random_noise(pic)        
             #cv2.imshow("PICTURE",pic);
             #cv2.waitKey(0)
             #exit(0)
@@ -68,6 +68,7 @@ def loadData():
 
             vals = vals[1:]
             pic = np.asarray(vals,dtype=np.uint8).reshape([28,28])#define the numpy array
+            pic = random_noise(pic)        
             pictures.append(pic)
     pictures = np.asarray(pictures)
     labels = np.asarray(labels)
