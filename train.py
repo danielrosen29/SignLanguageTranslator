@@ -3,7 +3,6 @@ import numpy as np
 import tensorflow as tf 
 from tensorflow.keras import Sequential
 from tensorflow.keras.layers import Input, Dense, Dropout, Flatten, Conv2D, MaxPool2D
-from skimage.util import random_noise
 import matplotlib
 import matplotlib.pyplot as plt
 import os
@@ -48,8 +47,8 @@ def loadData():
 
             vals = vals[1:]
             pic = np.asarray(vals,dtype=np.uint8).reshape([28,28])#define the numpy array
-            pic = random_noise(pic,mode='s&p',amount=0.1)#add some noise to the picture
-            #cv2.imshow("pic",pic)
+            
+            #cv2.imshow("PICTURE",pic);
             #cv2.waitKey(0)
             #exit(0)
             pictures.append(pic)
@@ -111,10 +110,8 @@ def makeModel():
             print(f"Unknown input: {s}")
             s = ""
     layers =  [Input(shape=(28,28,1),name='shape'),#make layers
-      Dropout(rate=.05, name='Dropout1'),
       Conv2D(16,3,padding="same",activation="relu"),
       MaxPool2D(),
-      Dropout(rate=.05, name='Dropout2'),
       Conv2D(32,3,padding="same",activation="relu"),
       MaxPool2D(),
       Flatten(),

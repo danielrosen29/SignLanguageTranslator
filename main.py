@@ -19,15 +19,13 @@ def drawText(text, frame, x, y):
 
 def loadNN():#load the model
     layers =  [Input(shape=(28,28,1),name='shape'),#make layers
-          Dropout(rate=.05, name='Dropout1'),
-          Conv2D(16,3,padding="same",activation="relu"),
-          MaxPool2D(),
-          Dropout(rate=.05, name='Dropout2'),
-          Conv2D(32,3,padding="same",activation="relu"),
-          MaxPool2D(),
-          Flatten(),
-          Dense(units=26, activation="softmax",name="out")]#note that we are including j and z, but they can not be seen in the data as they require movment
-        
+        Conv2D(16,3,padding="same",activation="relu"),
+        MaxPool2D(),
+        Conv2D(32,3,padding="same",activation="relu"),
+        MaxPool2D(),
+        Flatten(),
+        Dense(units=26, activation="softmax",name="out")]
+    
     tmp = Sequential(layers)
     tmp.load_weights(NNPATH)#load the data
     tmp.summary()#print a summary of the model
