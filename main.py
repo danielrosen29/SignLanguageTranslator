@@ -19,13 +19,17 @@ def drawText(text, frame, x, y):
 
 def loadNN():#load the model
     layers =  [Input(shape=(28,28,1),name='shape'),#make layers
-        Conv2D(16,3,padding="same",activation="relu"),
-        MaxPool2D(),
-        Conv2D(32,3,padding="same",activation="relu"),
-        MaxPool2D(),
-        Flatten(),
-        Dense(units=26, activation="softmax",name="out")]
-    
+      Conv2D(32,3,padding="same",activation="relu"),
+      MaxPool2D(),
+      Conv2D(32,3,padding="same",activation="relu"),
+      MaxPool2D(),
+      Conv2D(64, 3, padding="same", activation="relu"),
+      MaxPool2D(),
+      Flatten(),
+      Dense(units=256, activation="relu"),
+      Dropout(.5),
+      Dense(units=26, activation="softmax",name="out")
+    ]
     tmp = Sequential(layers)
     tmp.load_weights(NNPATH)#load the data
     tmp.summary()#print a summary of the model
@@ -46,10 +50,14 @@ def captureImage(event,x,y,flags,params):
         letter = ALPHA[predict(capture,params[2])]
         print(letter)
         toDraw += letter
+
+        if len(toDraw) > 3:
+            toDraw = letter
         
 
-def main():    
-    cap = cv2.VideoCapture(0)
+def main():
+    print("starting")
+    cap = cv2.VideoCapture(1)
     #put text at (x,y) on given frame
     color = (0,0,255)
     scale = 2

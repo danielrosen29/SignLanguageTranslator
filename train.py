@@ -110,13 +110,18 @@ def makeModel():
         else:
             print(f"Unknown input: {s}")
             s = ""
-    layers =  [Input(shape=(28,28,1),name='shape'),#make layers
-      Conv2D(16,3,padding="same",activation="relu"),
+    layers = [Input(shape=(28,28,1),name='shape'),#make layers
+      Conv2D(32,3,padding="same",activation="relu"),
       MaxPool2D(),
       Conv2D(32,3,padding="same",activation="relu"),
       MaxPool2D(),
+      Conv2D(64, 3, padding="same", activation="relu"),
+      MaxPool2D(),
       Flatten(),
-      Dense(units=26, activation="softmax",name="out")]#note that we are including j and z, but they can not be seen in the data as they require movment
+      Dense(units=256, activation="relu"),
+      Dropout(.5),
+      Dense(units=26, activation="softmax",name="out")
+    ]#note that we are including j and z, but they can not be seen in the data as they require movment
     
     cnn_model = Sequential(layers)
     cnn_model.summary()#print a summary of the model
