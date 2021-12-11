@@ -36,6 +36,7 @@ def loadNN():#load the model
     return tmp
 
 def predict(img,model):#predict what value it is
+    cv2.imshow("INPUT",img)
     out = model.predict(img.reshape(-1,28,28))#predict the type
     return np.argmax(out)
 #Click to capture the image in the box
@@ -57,7 +58,7 @@ def captureImage(event,x,y,flags,params):
 
 def main():
     print("starting")
-    cap = cv2.VideoCapture(1)
+    cap = cv2.VideoCapture(0)
     #put text at (x,y) on given frame
     color = (0,0,255)
     scale = 2

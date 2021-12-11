@@ -13,7 +13,7 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '-1'#TODO remove this if you have a graphic
 n_epochs = 3#how many times we train it
 
 DATAPATH = "./data/"
-CHECKPATH = "./checkpoint/checkpoint.ckpt"#path to weight checkpoint
+CHECKPATH = "./newCheck/checkpoint.ckpt"#path to weight checkpoint
 
 cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=CHECKPATH,
                                                  save_weights_only=True,
@@ -110,7 +110,11 @@ def makeModel():
         else:
             print(f"Unknown input: {s}")
             s = ""
+ 
+    model = Sequential()
+    '''
     layers = [Input(shape=(28,28,1),name='shape'),#make layers
+
       Conv2D(32,3,padding="same",activation="relu"),
       MaxPool2D(),
       Conv2D(32,3,padding="same",activation="relu"),
@@ -120,11 +124,33 @@ def makeModel():
       Flatten(),
       Dense(units=256, activation="relu"),
       Dropout(.5),
-      Dense(units=26, activation="softmax",name="out")
-    ]#note that we are including j and z, but they can not be seen in the data as they require movment
-    
-    cnn_model = Sequential(layers)
-    cnn_model.summary()#print a summary of the model
+      Dense(units=26, activation="softmax",name="out")]#note that we are including j and z, but they can not be seen in the data as they require movment
+    '''
+    model.add(Input(shape=(28,28,1),name="Input"))
+    model.add(Conv2D(filters=64,kernel_size=(3,3),padding="same", activation="relu"))
+    model.add(MaxPool2D())
+    model.add(Conv2D(filters=128, kernel_size=(3,3), padding="same", activation="relu"))
+    model.add(Conv2D(filters=128, kernel_size=(3,3), padding="same", activation="relu"))
+    model.add(MaxPool2D())
+    model.add(Conv2D(filters=256, kernel_size=(3,3), padding="same", activation="relu"))
+    model.add(Conv2D(filters=256, kernel_size=(3,3), padding="same", activation="relu"))
+    model.add(Conv2D(filters=256, kernel_size=(3,3), padding="same", activation="relu"))
+    model.add(MaxPool2D())
+    model.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
+    model.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
+    model.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
+    model.add(MaxPool2D())
+    model.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
+    model.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
+    model.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
+
+    model.add(Flatten())
+    model.add(Dense(units=4096,activation="relu"))
+    model.add(Dense(units=4096,activation="relu"))
+    model.add(Dense(units=26, activation="softmax"))
+
+
+    model.summary()#print a summary of the model
     
     if len(os.listdir(os.path.dirname(CHECKPATH))) != 0:
         print("\n---------------------------------------------------------------\n")
@@ -133,7 +159,7 @@ def makeModel():
             s = input("Found model checkpoint, Load Model? Y/N: ").lower()
             if s == "y":
                 print("Loading Model...")
-                cnn_model.load_weights(CHECKPATH)
+                model.load_weights(CHECKPATH)
             elif s == "n":
                 print("Not Loading")
             else:
@@ -144,7 +170,7 @@ def makeModel():
 
     
 
-    history = train(cnn_model,x_train,y_train,x_test,y_test,save) 
+    history = train(model,x_train,y_train,x_test,y_test,save) 
     
     stats(history)
 
