@@ -2,15 +2,15 @@ import cv2 #do something with opencv
 import numpy as np
 import tensorflow as tf 
 from tensorflow.keras import Sequential
-from tensorflow.keras.layers import Input, Dense, Dropout, Flatten, Conv2D, MaxPool2D
+from tensorflow.keras.layers import Input, Dense, Dropout, Flatten, Conv2D, MaxPooling2D, MaxPool2D
 from skimage.util import random_noise
 import matplotlib
 import matplotlib.pyplot as plt
 import os
-os.environ['CUDA_VISIBLE_DEVICES'] = '-1'#TODO remove this if you have a graphics card cuda can run on
+#os.environ['CUDA_VISIBLE_DEVICES'] = '-1'#TODO remove this if you have a graphics card cuda can run on
 #Ignore all the errors if you are not using the gpu to train
-
-n_epochs = 3#how many times we train it
+print(tf.__version__)
+n_epochs = 10#how many times we train it
 
 DATAPATH = "./data/"
 CHECKPATH = "./newCheck/checkpoint.ckpt"#path to weight checkpoint
@@ -47,7 +47,7 @@ def loadData():
 
             vals = vals[1:]
             pic = np.asarray(vals,dtype=np.uint8).reshape([28,28])#define the numpy array
-            pic = random_noise(pic)        
+            pic = random_noise(pic,mode="gaussian")
             #cv2.imshow("PICTURE",pic);
             #cv2.waitKey(0)
             #exit(0)
@@ -111,7 +111,7 @@ def makeModel():
             print(f"Unknown input: {s}")
             s = ""
  
-    model = Sequential()
+   
     '''
     layers = [Input(shape=(28,28,1),name='shape'),#make layers
 
@@ -126,29 +126,25 @@ def makeModel():
       Dropout(.5),
       Dense(units=26, activation="softmax",name="out")]#note that we are including j and z, but they can not be seen in the data as they require movment
     '''
+
+    model = Sequential()
+    
     model.add(Input(shape=(28,28,1),name="Input"))
-    model.add(Conv2D(filters=64,kernel_size=(3,3),padding="same", activation="relu"))
-    model.add(MaxPool2D())
-    model.add(Conv2D(filters=128, kernel_size=(3,3), padding="same", activation="relu"))
-    model.add(Conv2D(filters=128, kernel_size=(3,3), padding="same", activation="relu"))
-    model.add(MaxPool2D())
-    model.add(Conv2D(filters=256, kernel_size=(3,3), padding="same", activation="relu"))
-    model.add(Conv2D(filters=256, kernel_size=(3,3), padding="same", activation="relu"))
-    model.add(Conv2D(filters=256, kernel_size=(3,3), padding="same", activation="relu"))
-    model.add(MaxPool2D())
-    model.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
-    model.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
-    model.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
-    model.add(MaxPool2D())
-    model.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
-    model.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
-    model.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
-
+    model.add(Conv2D(filters=16,kernel_size=(2,2),padding="same", activation="relu"))
+    model.add(MaxPooling2D())
+    model.add(Dropout(0.2))
+    model.add(Conv2D(filters=32, kernel_size=(3,3), padding="same", activation="relu"))
+    model.add(Conv2D(filters=32, kernel_size=(3,3), padding="same", activation="relu"))
+    model.add(MaxPooling2D())
+    model.add(Dropout(0.2))
+    model.add(Conv2D(filters=64, kernel_size=(5,5), padding="same", activation="relu"))
+    model.add(Conv2D(filters=64, kernel_size=(5,5), padding="same", activation="relu"))
+    model.add(Conv2D(filters=64, kernel_size=(5,5), padding="same", activation="relu"))
     model.add(Flatten())
-    model.add(Dense(units=4096,activation="relu"))
-    model.add(Dense(units=4096,activation="relu"))
+    model.add(Dense(128, activation="relu"))
+    model.add(Dropout(0.5))
     model.add(Dense(units=26, activation="softmax"))
-
+    
 
     model.summary()#print a summary of the model
     
@@ -170,7 +166,7 @@ def makeModel():
 
     
 
-    history = train(model,x_train,y_train,x_test,y_test,save) 
+    history = train(model,x_train,y_train,x_test,y_test,save)
     
     stats(history)
 
