@@ -10,7 +10,7 @@ import os
 #os.environ['CUDA_VISIBLE_DEVICES'] = '-1'#TODO remove this if you have a graphics card cuda can run on
 #Ignore all the errors if you are not using the gpu to train
 print(tf.__version__)
-n_epochs = 10#how many times we train it
+n_epochs = 3#how many times we train it
 
 DATAPATH = "./data/"
 CHECKPATH = "./newCheck/checkpoint.ckpt"#path to weight checkpoint
@@ -39,6 +39,7 @@ def loadData():
     pictures = []
     with open(DATAPATH+"train.csv", 'r') as f:
         lines = f.readlines()[1:]#skip label line
+        i = 0
         for line in lines:
             vals = line.split(',')
             
@@ -47,11 +48,11 @@ def loadData():
 
             vals = vals[1:]
             pic = np.asarray(vals,dtype=np.uint8).reshape([28,28])#define the numpy array
-            pic = random_noise(pic,mode="gaussian")
-            #cv2.imshow("PICTURE",pic);
-            #cv2.waitKey(0)
-            #exit(0)
+            pic = cv2.adaptiveThreshold(pic,255,
+                    cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY_INV,11,6)
+            pic = cv2.morphologyEx(pic, cv2.MORPH_CLOSE, (3,3)) 
             pictures.append(pic)
+            i += 1
 
     pictures = np.asarray(pictures)
     labels = np.asarray(labels)
@@ -68,7 +69,9 @@ def loadData():
 
             vals = vals[1:]
             pic = np.asarray(vals,dtype=np.uint8).reshape([28,28])#define the numpy array
-            pic = random_noise(pic)        
+            pic = cv2.adaptiveThreshold(pic,255,
+                    cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY_INV,11,6)
+            pic = cv2.morphologyEx(pic, cv2.MORPH_CLOSE, (3,3)) 
             pictures.append(pic)
     pictures = np.asarray(pictures)
     labels = np.asarray(labels)
