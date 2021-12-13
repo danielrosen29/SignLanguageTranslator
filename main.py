@@ -50,9 +50,6 @@ def loadNN():#load the model
     model.add(Dropout(0.5))
     model.add(Dense(units=26, activation="softmax"))
 
-
-    model.summary()#print a summary of the model
-
     model.load_weights(NNPATH)#load the data
     model.summary()#print a summary of the model
     return model
@@ -64,18 +61,14 @@ def predict(img,model):#predict what value it is
 
     cv2.imshow("INPUT",img)
     out = model.predict(img.reshape(-1,28,28))[0]#predict the type
-    print(out)
-    print(out[np.argmax(out)])
     return np.argmax(out)
 #Click to capture the image in the box
 def captureImage(event,x,y,flags,params):
     if event == cv2.EVENT_LBUTTONDOWN:
         global toDraw
-        print("here")
         capture = params[0][params[1]//3-(int)(params[1]*.10)+2:params[1]//3*2-(int)(params[1]*.10), params[1]//3+3:params[1]//3*2]
         capture = cv2.cvtColor(capture, cv2.COLOR_BGR2GRAY)
         capture = cv2.resize(capture, (28,28), interpolation = cv2.INTER_AREA)
-        print(capture.shape)
         letter = ALPHA[predict(capture,params[2])]
         print(letter)
         toDraw += letter
