@@ -3,7 +3,6 @@ import numpy as np
 import tensorflow as tf 
 from tensorflow.keras import Sequential
 from tensorflow.keras.layers import Input, Dense, Dropout, Flatten, Conv2D, MaxPooling2D, MaxPool2D
-from skimage.util import random_noise
 import matplotlib
 import matplotlib.pyplot as plt
 import os
