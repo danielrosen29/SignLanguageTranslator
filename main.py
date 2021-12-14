@@ -73,8 +73,11 @@ def captureImage(event,x,y,flags,params):
         print(letter)
         toDraw += letter
 
-        if len(toDraw) > 3:
+        if len(toDraw) > 1:
             toDraw = letter
+    
+    if event == cv2.EVENT_RBUTTONDOWN:
+        toDraw = ""
         
 
 def main():
